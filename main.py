@@ -3,8 +3,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 Image.MAX_IMAGE_PIXELS = 1000000000
 
-from os import listdir
-from os.path import isfile, join
+from os import listdir, makedirs
+from os.path import isdir, isfile, join
 
 #
 FILE_ROOT = '/Users/ben/Documents/stuff/quickcrop/testpics/'#'/Users/ben/odrive/benj.e.myers/Photos'
@@ -122,9 +122,13 @@ class QuickCrop(Tk):
     def crop(self):
         print("original image size: " + str(self.orig_im_size))
         for cropper in self.croppers:
-            fileName = cropper.entry.get(1.0, END).rstrip()
-            if fileName == None or fileName == '':
-                fileName = self.orig_fileName + "_" + str(cropper.id)
+            dirName = cropper.entry.get(1.0, END).rstrip()
+
+            if (not isdir(DESTINATION_DIR + dirName)):
+                makedirs(DESTINATION_DIR + dirName)
+
+            dirSize = str(len(listdir(DESTINATION_DIR + dirName)))
+        
             x1a = cropper.x1 * self.ratio
             x2a = cropper.x2 * self.ratio
             y1a = cropper.y1 * self.ratio
@@ -132,7 +136,7 @@ class QuickCrop(Tk):
             print("crop bounds: " + str(x1a) + ", " + str(y1a) + ", " + str(x2a) + ", " + str(y2a))
             box = (x1a, y1a, x2a, y2a)
             region = self.im.crop(box)
-            region.save(DESTINATION_DIR + fileName + ".jpeg")
+            region.save(DESTINATION_DIR + dirName + "/" + dirName + "_" + dirSize + ".jpeg")
         print("DONE")
 
     def on_button_press(self, event):
