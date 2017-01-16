@@ -87,14 +87,14 @@ class QuickCrop(Tk):
         self.thumb = self.im.copy()
         self.orig_im_size = self.im.size
 
-        size = self.window_width * 0.66, self.window_height - 10
+        size = self.window_width * 0.66, self.window_height - 50
         self.thumb.thumbnail(size, Image.ANTIALIAS)
         ## landscape image
         if self.orig_im_size[0] > self.orig_im_size[1]:
             ratio = self.orig_im_size[0] / (self.window_width * 0.66)
             self.ratio = ratio
         else:
-            ratio = self.orig_im_size[1] / (self.window_height - 10)
+            ratio = self.orig_im_size[1] / (self.window_height - 50)
             self.ratio = ratio
         self._draw_image()
 
@@ -105,8 +105,9 @@ class QuickCrop(Tk):
     def displayFiles(self):
         ct = 1
         for file in [f for f in listdir(FILE_ROOT) if isfile(join(FILE_ROOT, f))]:
-            self.file_pane.insert(ct, file)
-            ct = ct + 1
+            if file != '.DS_Store':
+                self.file_pane.insert(ct, file)
+                ct = ct + 1
         self.file_pane.bind('<<ListboxSelect>>',self.loadImage)
 
     def addCrop(self):
